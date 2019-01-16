@@ -81,6 +81,19 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           res.end(err);
         });
       });
+      //根据关键词搜索
+      app.get('/api/getSearch', (req, res) => {
+        let url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp';
+        axios.get(url, {
+          headers: {
+            origin: 'https://y.qq.com',
+            referer: 'https://y.qq.com/m/index.html'
+          },
+          params: req.query
+        }).then((response) => {
+          res.json(response.data)
+        })
+      })
     },
     clientLogLevel: 'warning',
     historyApiFallback: {

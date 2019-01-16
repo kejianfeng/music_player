@@ -93,6 +93,20 @@ export default new Vuex.Store({
         },
         changeTopList(state, item) {
             state.topList = item;
+        },
+        addSingleSong(state, song) {
+            state.play = true;
+            state.fullScreen = true;
+            state.currrentIndex = 0;
+            state.playList.push(song);
+            state.sequenceList.push(song)
+        },
+        addToPlayList(state, song) {
+            state.play = true;
+            state.fullScreen = true;
+            state.playList.splice(state.currrentIndex,0,song); 
+            state.currrentIndex --;
+            state.currrentIndex ++;
         }
     }
 

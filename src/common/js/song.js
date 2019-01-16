@@ -69,7 +69,7 @@ export function selectSong(musicData) {
 
 }
 //如果有多个歌手，则聚合
-function filterSinger(singer) {
+export function filterSinger(singer) {
     let useful = [];
     if(!singer) {
         return ''

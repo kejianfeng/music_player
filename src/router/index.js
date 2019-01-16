@@ -45,7 +45,14 @@ export default new Router({
     {
       path:'/search',
       name:'search',
-      component:Search
+      component:Search,
+      children:[
+        {
+          path:':id' ,//根据id进行跳转
+          component:SingerDetail
+        }
+      ]
+
     },
     {
       path:'/recommend',

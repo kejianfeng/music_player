@@ -25,7 +25,7 @@
         type: Array,
         default: null
       },
-      pullup: {
+      pullup: {  //是否检测下拉
         type: Boolean,
         default: false
       },
@@ -61,8 +61,8 @@
         }
 
         if (this.pullup) {
-          this.scroll.on('scrollEnd', () => {
-            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+          this.scroll.on('scrollEnd', () => {  
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {  //即还可以加载
               this.$emit('scrollToEnd')
             }
           })
