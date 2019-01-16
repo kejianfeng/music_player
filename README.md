@@ -1,4 +1,4 @@
-# music_plauer
+# music_player
 
 > 音乐播放器
 
