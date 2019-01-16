@@ -14,8 +14,8 @@ export default new Vuex.Store({
       playList: [],  //当前播放列表 
       sequenceList: [], //顺序播放列表，当播放模式为顺序播放时，playList与sequenceList是一致的
       mode: playMode.sequence,  //在playMode对象定义好的播放模式，这样显得更语义化
-      currrentIndex:-1  //当前播放歌曲在播放列表的索引，通过播放索引可以算出当前播放的歌曲信息，即playList[currrentIndex]
-
+      currrentIndex:-1,  //当前播放歌曲在播放列表的索引，通过播放索引可以算出当前播放的歌曲信息，即playList[currrentIndex]
+      searchHistory: JSON.parse(localStorage.getItem('history')) || []
     },
 
 
@@ -107,6 +107,26 @@ export default new Vuex.Store({
             state.playList.splice(state.currrentIndex,0,song); 
             state.currrentIndex --;
             state.currrentIndex ++;
+        },
+        putIntoHistory(state, data) {  //往localStorage里写进数据
+            let history_1 = JSON.parse(localStorage.getItem('history'))  || []; //因为localStorage存储格式只能是String,所以取出来要解码，存进去要编码
+            history_1.unshift(data);
+            let history_2 = Array.from(new Set(history_1)); //快速去重
+            if(history_2.length > 10) {  //最多为10条数据
+                history_2.splice(10)
+            }
+            state.searchHistory = history_2
+            localStorage.setItem('history', JSON.stringify(history_2))
+        },
+        toDeleteSingle(state, index) {
+            let history_1 = JSON.parse(localStorage.getItem('history'));
+            history_1.splice(index,1);
+            state.searchHistory = history_1;
+            localStorage.setItem('history', JSON.stringify(history_1))
+        },
+        clearAll(state) {
+            state.searchHistory = [];
+            localStorage.setItem('history', null)
         }
     }
 

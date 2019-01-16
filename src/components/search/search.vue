@@ -4,7 +4,8 @@
       <search-box  ref="searchBox" @queryNow="getQuery"></search-box>
     </div>
     <div class="shortcut-wrapper" v-show="!query">
-      <div class="shortcut">
+      <scroll class="shortcut" :data="refresh">
+        <div>
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
             <ul >
@@ -13,10 +14,20 @@
                 </li>
             </ul>
           </div>
-      </div>
+          <div class="search-history" v-show="searchHistory.length">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span class="clear" @click="_clearAll">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+            <search-list :history="searchHistory" @deleSingle="_toDeleteSingle"></search-list>
+          </div>
+          </div>
+        </scroll>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query"></suggest>
+      <suggest :query="query" @beforeScroll="fadeInput"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -26,12 +37,24 @@
   import SearchBox from 'base/search-box/search-box'
   import {getHotSrarchList} from 'api/hotSearch' 
   import suggest from 'components/suggest/suggest'
+  import SearchList from 'base/search-list/search-list'
+  import Scroll from 'base/scroll/scroll'
 
   export default {
     name:'search',
     components: {
       SearchBox,
-      suggest
+      suggest,
+      SearchList,
+      Scroll
+    },
+    computed: {
+      searchHistory() {
+        return this.$store.state.searchHistory
+      },
+      refresh() {
+        return this.hotKey.concat(this.searchHistory)  //热搜与关键词任一发生变化都去重新计算要滚动的高度
+      }
     },
     data() {
       return {
@@ -46,7 +69,9 @@
       _getHotSrarchList() {
         getHotSrarchList().then((res) => {
           if(res.code === 0) {
-            this.hotKey = res.data.hotkey
+           let hotKey_1 = res.data.hotkey
+            hotKey_1.splice(10)  //取前十条热搜
+            this.hotKey = hotKey_1
           }
         })
       },
@@ -55,6 +80,15 @@
       },
       getQuery(newQuery) {
         this.query = newQuery
+      },
+      fadeInput() {
+        this.$refs.searchBox.blurInput()
+      },
+      _toDeleteSingle(index) {
+        this.$store.commit('toDeleteSingle', index)
+      },
+      _clearAll() {
+        this.$store.commit('clearAll')
       }
     }
 

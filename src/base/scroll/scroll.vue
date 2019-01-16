@@ -29,7 +29,7 @@
         type: Boolean,
         default: false
       },
-      beforeScroll: {
+      beforeScroll: {  //在滚动的一开始就触发的一个函数
         type: Boolean,
         default: false
       },
@@ -68,7 +68,7 @@
           })
         }
 
-        if (this.beforeScroll) {
+        if (this.beforeScroll) {  //在滚动的一开始就触发的一个函数
           this.scroll.on('beforeScrollStart', () => {
             this.$emit('beforeScroll')
           })

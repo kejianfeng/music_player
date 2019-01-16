@@ -1,7 +1,7 @@
 <template>
   <div class="search-box">
     <i class="icon-search"></i>
-    <input class="box" :placeholder="placeholder" v-model="query"/>
+    <input class="box" :placeholder="placeholder" v-model="query" ref="toBlur"/>
     <i class="icon-dismiss" v-show="query" @click="clear"></i>
   </div>
 </template>
@@ -31,6 +31,9 @@
       },
       addHotQuery(query) {
         this.query = query
+      },
+      blurInput() {
+        this.$refs.toBlur.blur()
       }
     },
     watch: {

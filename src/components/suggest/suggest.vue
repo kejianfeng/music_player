@@ -1,5 +1,5 @@
 <template>
-  <scroll class="suggest" :data="result" @scrollToEnd="loadMore" :pullup="pullup">
+  <scroll class="suggest" :data="result" @scrollToEnd="loadMore" :pullup="pullup" :beforeScroll="beforeScroll" @beforeScroll="_beforeScroll">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="item in result" @click="enterSingerOrMusic(item)">
         <div class="icon">
@@ -11,6 +11,9 @@
       </li>
       <loading v-show="hasMore"></loading>
     </ul>
+    <div class="no-result-wrapper">
+        <no-result title="没有搜索到东西哦" v-show="!hasMore && !result.length"></no-result>
+    </div>
   </scroll>
 </template>
 
@@ -21,6 +24,7 @@
   import {filterSinger} from 'common/js/song'
   import loading from 'base/loading/loading'
   import {selectSong} from 'common/js/song'
+  import NoResult from 'base/no-result/no-result'
 
   const perpage = 20
 
@@ -38,14 +42,16 @@
     
     components: {
       Scroll,
-      loading
+      loading,
+      NoResult
     },
     data() {
       return {
         page: 1,
         result:[],
         hasMore:true,
-        pullup:true
+        pullup:true,
+        beforeScroll:true
       }
     },
     methods: {
@@ -92,7 +98,7 @@
               name:item.singername,
               face_pic:`https://y.gtimg.cn/music/photo_new/T001R300x300M000${item.singermid}.jpg?max_age=2592000`
             };
-            console.log(singer.face_pic)
+            this.$store.commit('putIntoHistory',singer.name)
             this.$router.push({
               path:`/search/${singer.id}`
             })
@@ -100,7 +106,7 @@
           }
           else {
               selectSong(item).then((res) => {
-                console.log(11111111)
+                this.$store.commit('putIntoHistory', res.name)
                let song = res;
                if(this.$store.state.playList.length === 0) { //若播放列表为空
                  this.$store.commit("addSingleSong",song)
@@ -137,6 +143,9 @@
           ret = ret.concat(data.song.list)
         }
         return ret
+      },
+      _beforeScroll() {
+        this.$emit('beforeScroll')
       }
 
     },
